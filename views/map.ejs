@@ -1,0 +1,65 @@
+<div id="map-canvas"></div>
+
+<script type="text/javascript">
+function initMap() {
+  var mapOptions = {
+    zoom: 13,
+    center: new google.maps.LatLng(10.3, 123.9),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+	var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+
+	var startBounds =	new google.maps.LatLng(10.398844936951104, 123.87994766235352); 
+	var endBounds =	new google.maps.LatLng(10.296341161121461, 123.98775100708008);
+	var cebuBounds = new google.maps.LatLngBounds(startBounds, endBounds);
+
+
+	google.maps.event.addListener(map, 'dragend', function() {
+		var c = map.getCenter(),
+				x = c.lng(),
+				y = c.lat(),
+				maxX = endBounds.lng(),
+				minY = endBounds.lat(),
+				minX = startBounds.lng(),
+				maxY = startBounds.lat();
+		
+		if(!(x > minX && x < maxX && y > minY && y < maxY)){
+			if (x < minX) x = minX;
+			if (x > maxX) x = maxX;
+			if (y < minY) y = minY;
+			if (y > maxY) y = maxY;
+
+			var newCenter = new google.maps.LatLng(y, x);
+			map.panTo(newCenter);
+			map.setCenter(newCenter);
+		}
+	});
+
+	var minZoomLevel = 13;
+	google.maps.event.addListener(map, 'zoom_changed', function() {
+     if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);
+   });
+
+	/*temp --this function shows the bounds of cebu city that will be covered.*/
+	var c = 0;
+	google.maps.event.addListener(map, 'click', function(e) {
+		console.log(e.latLng);
+		if(c < 1){
+		new google.maps.Marker({ position: startBounds, map: map, title: 'Start' });
+		new google.maps.Marker({ position: endBounds, map: map, title: 'End' });
+		}
+		c++;
+	});
+
+}
+
+function loadMapScript() {
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyCXzsYoJeFVeuF8vAbEqOVpw6kp1-1s9WM&sensor=false&callback=initMap";
+  document.body.appendChild(script);
+}
+
+window.onload = loadMapScript;
+</script>

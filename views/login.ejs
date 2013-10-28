@@ -1,0 +1,30 @@
+<center>
+<%=title%><br/>
+
+<div id="errorMsg"></div><br/>
+Username: <input type="text" id="uname" name="uname" placeholder="Account"></input><br/>
+Password: <input type="password" id="pass" name="pass" placeholder="Password"></input><br/>
+<button id="login">Login</button>
+
+</center>
+<script>
+$(document).ready(function() {
+
+            $("#login").click(function() {   
+                       
+              $.ajax({
+                   url: '/validate',
+                   type: 'POST',
+                   data: {uname:$('#uname').val(), pass:$('#pass').val()},
+                   success: function(response){
+            			   if(response=='0')
+                        $('#errorMsg').replaceWith("Invalid username or password"); 
+                     else
+                        $('body').replaceWith(response); 
+                   },
+   
+
+              });
+            });
+});
+</script>
